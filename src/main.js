@@ -3,6 +3,9 @@ const storeState = () => {
   return () => {
     const plantNum = Object.keys(globalState).length + 1;
     globalState[plantNum] = {plantNumber:plantNum};
+    const allListener = (prop,value) => {
+      changeState(prop,value,globalState[plantNum]);
+    };
     return (stateChangeFunction = state => state) => {
       const newState = stateChangeFunction(globalState[plantNum]);
       globalState[plantNum] = {...newState};
@@ -20,6 +23,35 @@ const changeState = (prop) => {
   };
 };
 
+function createRandomizedPower(plant) {
+  const ranNum = Math.floor(Math.random() * 3);
+  if (ranNum === 1) {
+    plant.powerButton.innerText = "FoodPower";
+    return(
+      plant.powerButton.addEventListener("click", function() {
+        plant.allListener("soil")(5);
+      })
+    );
+  }
+  if (ranNum === 2) { // Code breaks on launch there seems to be an issue with code triggering out of order
+    plant.powerButton.innerText = "WaterPower";
+    return(
+      plant.powerButton.addEventListener("click", function() {
+        plant.allListener("water")(5);
+      })
+    );
+  }
+  if (ranNum === 3) {
+    plant.powerButton.innerText = "BalancePower";
+    return(
+      plant.powerButton.addEventListener("click", function() {
+        plant.allListener("soil")(1);
+        plant.allListener("water")(1);
+      })
+    );
+  }
+}
+
 const feed = changeState("soil");
 const hydrate = changeState("water");
 // const giveLight = changeState("light");
@@ -32,6 +64,7 @@ const createPlant = (createPlantFun) => {
   const foodText = document.createElement("p");
   const foodButton = document.createElement("button");
   const waterButton = document.createElement("button");
+  const powerButton = document.createElement("button");
   
   const plant = createPlantFun();
   
@@ -39,7 +72,7 @@ const createPlant = (createPlantFun) => {
     const newState = plant(feed(1));
     foodText.innerText = `Food: ${newState.soil}`;
   });
-
+  
   waterButton.addEventListener("click", function() {
     const newState = plant(hydrate(1));
     waterText.innerText = `Water: ${newState.water}`;
@@ -50,13 +83,16 @@ const createPlant = (createPlantFun) => {
   foodButton.innerText = "Feed";
   waterText.innerText = "Water: 0";
   waterButton.innerText = "Water";
+
+  createRandomizedPower(plant);
   
   plantDiv.appendChild(h2Element);
   plantDiv.appendChild(waterText);
   plantDiv.appendChild(foodText);
   plantDiv.appendChild(foodButton);
   plantDiv.appendChild(waterButton);
-  
+  plantDiv.appendChild(powerButton);
+
   document.getElementById("plant").appendChild(plantDiv);
 };
 
@@ -66,7 +102,7 @@ window.onload = function() {
   const mainState = storeState();
   
   document.getElementById('create-plant').onclick = function() {
-    createPlant(mainState); //Read 1227 and 1309 to better understand adding things to the HTML or Dom
+    createPlant(mainState); 
   };
 
   // document.getElementById('show-state').onclick = function() {
