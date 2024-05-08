@@ -18,7 +18,7 @@ const storeState = () => {
         const newState = stateChangeFunction(globalState[plantNum]);
         globalState[plantNum] = {...newState};
         return newState;
-      }
+      };
     }
   };
 };
@@ -70,9 +70,7 @@ const createPlant = (createPlantOrGlobalChange) => {
   const plantDiv = document.createElement("div");
   const h2Element = document.createElement("h2");
   const waterText = document.createElement("p");
-  waterText.id = "water";
   const foodText = document.createElement("p");
-  foodText.id = "food";
   const foodButton = document.createElement("button");
   const waterButton = document.createElement("button");
   const powerButton = document.createElement("button");
@@ -82,15 +80,20 @@ const createPlant = (createPlantOrGlobalChange) => {
   const updateAllPlants = createPlantOrGlobalChange(true);
   
   powerButton.innerText = "FoodPower";
+  
+  const thisPlant = plant();
+    
+  foodText.classList.add("foodText");
+  waterText.classList.add("waterText");
 
-  // plantDiv.id = plant[plantNum];
-
+  foodText.value = thisPlant.plantNumber;
+  waterText.value = thisPlant.plantNumber;
+  
   powerButton.addEventListener("click", function() {
     const updatedGlobalState = updateAllPlants("soil",3);
-    console.log(updatedGlobalState);
-    // Added ID to every plant div
-    // Grab and replace all the div info appropriately 
-    // Remember to reset the display
+    document.querySelectorAll(".foodText").forEach( (element) => {
+      element.innerText = `Food: ${updatedGlobalState[element.value].soil}`;
+    });
   });
 
   foodButton.addEventListener("click", function() {
