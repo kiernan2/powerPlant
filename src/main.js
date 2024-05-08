@@ -9,13 +9,16 @@ const storeState = () => {
         console.log(globalState);
         return globalState;
       };
-    }
-    else {
+    } else {
       const plantNum = Object.keys(globalState).length;
       globalState[plantNum] = {plantNumber:plantNum};
-      const newState = (globalState[plantNum]);
-      globalState[plantNum] = {...newState};
-      return globalState;
+      const newGlobalState = {...globalState};
+      globalState = newGlobalState;
+      return (stateChangeFunction = state => state) => {
+        const newState = stateChangeFunction(globalState[plantNum]);
+        globalState[plantNum] = {...newState};
+        return newState;
+      }
     }
   };
 };
@@ -91,12 +94,12 @@ const createPlant = (createPlantOrGlobalChange) => {
   });
 
   foodButton.addEventListener("click", function() {
-    const newState = changeState("soil")(1)(this);
+    const newState = plant(feed(1));
     foodText.innerText = `Food: ${newState.soil}`;
   });
   
   waterButton.addEventListener("click", function() {
-    const newState = changeState("water")(1)(this);
+    const newState = plant(hydrate(1));
     waterText.innerText = `Water: ${newState.water}`;
   });
   
