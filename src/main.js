@@ -1,23 +1,20 @@
 const storeState = () => {
   let globalState = {};
   return (globalChange) => {
-    const plantNum = Object.keys(globalState).length;
-    globalState[plantNum] = {plantNumber:plantNum};
-    const newState = (globalState[plantNum]);
-    globalState[plantNum] = {...newState};
     if (globalChange === true) {
       return (prop,value) => {
         const changeValues = Object.keys(globalState).map((plant) => ({...globalState[plant], [prop]: (globalState[plant][prop] || 0) + value}));
         const changedGlobalState = {...changeValues};
         globalState = changedGlobalState;
+        console.log(globalState);
         return globalState;
       };
     }
     else {
-      // const plantNum = Object.keys(globalState).length;
-      // globalState[plantNum] = {plantNumber:plantNum};
-      // const newState = (globalState[plantNum]);
-      // globalState[plantNum] = {...newState};
+      const plantNum = Object.keys(globalState).length;
+      globalState[plantNum] = {plantNumber:plantNum};
+      const newState = (globalState[plantNum]);
+      globalState[plantNum] = {...newState};
       return globalState;
     }
   };
@@ -42,7 +39,7 @@ const changeState = (prop) => {
 //       })
 //     );
 //   }
-//   else if (ranNum === 2) { // Code breaks on launch there seems to be an issue with code triggering out of order
+//   else if (ranNum === 2) {
 //     powerButton.innerText = "WaterPower";
 //     return(
 //       powerButton.addEventListener("click", function() {
@@ -65,9 +62,7 @@ const feed = changeState("soil");
 const hydrate = changeState("water");
 // const giveLight = changeState("light");
 
-const createPlant = () => {
-
-  let state = storeState(true);
+const createPlant = (createPlantOrGlobalChange) => {
   
   const plantDiv = document.createElement("div");
   const h2Element = document.createElement("h2");
@@ -79,22 +74,19 @@ const createPlant = () => {
   const waterButton = document.createElement("button");
   const powerButton = document.createElement("button");
   
-  // const plant = createPlantOrGlobalChange(false);
+  const plant = createPlantOrGlobalChange(false);
   
-  // const updateAllPlants = createPlantOrGlobalChange(true);
+  const updateAllPlants = createPlantOrGlobalChange(true);
   
   powerButton.innerText = "FoodPower";
-  
-  // const 
-  // const
 
   // plantDiv.id = plant[plantNum];
 
   powerButton.addEventListener("click", function() {
-    // const updatedGlobalState = updateAllPlants("soil",3);
-    // console.log(updatedGlobalState);
+    const updatedGlobalState = updateAllPlants("soil",3);
+    console.log(updatedGlobalState);
     // Added ID to every plant div
-    // Grab and replace all the div info appropriately  // Further complications I need to figure out how to get globalState plantNum Down here
+    // Grab and replace all the div info appropriately 
     // Remember to reset the display
   });
 
@@ -126,14 +118,11 @@ const createPlant = () => {
 
 window.onload = function() {
   
-  // The following line has to do with the apps global state
-  // const mainState = storeState();
+  const mainState = storeState();
   
-  document.getElementById('create-plant').onclick = function() {
-    createPlant(); 
-  };
+  console.log(mainState(true));
 
-  // document.getElementById('soil-value').innerText = `Soil: ${currentState.soil}`;
-  // document.getElementById('water-value').innerText = `Water: ${currentState.water}`;
-  // document.getElementById('light-value').innerText = `light: ${currentState.light}`;
+  document.getElementById('create-plant').onclick = function() {
+    createPlant(mainState); 
+  };
 };
