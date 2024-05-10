@@ -71,8 +71,7 @@ const createPlant = (createPlantOrGlobalChange) => {
           });
         })
       );
-    }
-    else if (ranNum === 1) {
+    } else if (ranNum === 1) {
       powerButton.innerText = "WaterPower";
       return(
         powerButton.addEventListener("click", function() {
@@ -82,8 +81,7 @@ const createPlant = (createPlantOrGlobalChange) => {
           });
         })
       );
-    }
-    else if (ranNum === 2) {
+    } else if (ranNum === 2) {
       powerButton.innerText = "BalancePower";
       return(
         powerButton.addEventListener("click", function() {
